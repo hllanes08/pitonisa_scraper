@@ -16,5 +16,16 @@ require 'uri'
 
 class Site < ActiveRecord::Base
     def popularize
+	site =  Nokogiri::HTML(RestClient.get(self.url))
+	self.update_attribute(:name,site.css('title').text)
+	search(site, "h1")
+    end
+
+    private
+
+    def search(site, tag)
+	site.css(tag).each do |item|
+		p item.text
+	end
     end
 end

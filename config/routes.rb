@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       resources :users ,:only =>[:index,:show,:create,:update, :destroy]
       resources :sessions, :only =>[:create,:destroy]
       resources :sites, :only => [:create, :index]
+      get 'sites/:id/popularize', to: 'sites#popularize'
       end
   end
 end

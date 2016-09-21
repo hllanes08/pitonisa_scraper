@@ -13,6 +13,10 @@ class API::V1::SitesController < ApplicationController
 	end
     end
 
+    def popularize
+    	site = Site.find(params[:id])
+	render json: site.popularize
+    end
     private
 
     def site_params
