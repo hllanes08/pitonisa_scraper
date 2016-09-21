@@ -1,17 +1,15 @@
 # == Schema Information
 #
-# Table name: actions
+# Table name: trends
 #
 #  id         :integer          not null, primary key
-#  type       :string
+#  site_id    :integer
 #  name       :string
-#  user_id    :integer
+#  trend_date :date
+#  rank       :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
-require 'rails_helper'
-
-RSpec.describe Action, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+class Trend < ActiveRecord::Base
 end

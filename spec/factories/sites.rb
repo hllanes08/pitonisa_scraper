@@ -1,17 +1,20 @@
 # == Schema Information
 #
-# Table name: actions
+# Table name: sites
 #
 #  id         :integer          not null, primary key
-#  type       :string
+#  url        :string
 #  name       :string
-#  user_id    :integer
+#  type       :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
-require 'rails_helper'
+FactoryGirl.define do
+  factory :site do
+    url "MyString"
+name "MyString"
+type 1
+  end
 
-RSpec.describe Action, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
 end
