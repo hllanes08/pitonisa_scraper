@@ -13,5 +13,13 @@
 require 'rails_helper'
 
 RSpec.describe Site, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+    it 'has a url' do
+	raise unless Site.new(url: "http://www.google.com",name:"Google", site_type: 0).url == "http://www.google.com" 
+    end
+    it 'has a name' do
+        raise unless Site.new(url: "http://www.google.com",name:"Google", site_type: 0).name == "Google" 
+    end
+    it 'hast a type' do
+        raise unless Site.new(url: "http://www.google.com",name:"Google", site_type: 0).site_type == 0  
+    end
 end
