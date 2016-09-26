@@ -27,6 +27,7 @@ class Site < ActiveRecord::Base
         site =  Nokogiri::HTML(RestClient.get(self.url)) 
     	trends =  Hash.new
  	search_general(site, trends, key)
+	sub_search(site, trends, key)
 	return trends
     end
     
@@ -63,11 +64,10 @@ class Site < ActiveRecord::Base
     end
     def search(site, tag, tags, key)
 	site.css(tag).each do |item|
-	   p key
 	   if key.nil?
 		tags.push reduce_content(item.text)	
 	    else
-	    	next unless item.text.include? key
+		next unless item.text.downcase.include? key
 		tags.push reduce_content(item.text)
 	    end	    
 	end
