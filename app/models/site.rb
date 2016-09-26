@@ -19,28 +19,37 @@ class Site < ActiveRecord::Base
 	site =  Nokogiri::HTML(RestClient.get(self.url))
 	self.update_attribute(:name,site.css('title').text)
 	trends =  Hash.new
- 	search_general(site, trends)
-	
-	site.css("a").each do |li|
+	search_general(site, trends, nil)
+	sub_search(site, trends, nil)	
+	return trends.sort_by { |key, value| value}.reverse.to_h
+    end
+    def popularize_by_key(key)
+        site =  Nokogiri::HTML(RestClient.get(self.url)) 
+    	trends =  Hash.new
+ 	search_general(site, trends, key)
+	return trends
+    end
+    
+    private
+    def sub_search(site, trends, key)
+    	site.css("a").each do |li|
 	    if !li['href'].nil? and li['href'].start_with? self.url
 	       url = li['href'].gsub(/\s+/,'')
 	       p url
 	       subsite =  Nokogiri::HTML(RestClient.get(url))
-	       search_general(subsite, trends)  
+	       search_general(subsite, trends, key)  
   	    end
-	end
-	return trends.sort_by {|key, value| value}.reverse.to_h
+	end	
     end
-
-    private
-
-    def search_general(site, trends)
+ 
+    def search_general(site, trends, key)
 	content = []
-       	search(site, "h1", content)
-	search(site, "h2", content)
-	search(site, "h3", content)
-	search(site, "h4", content)
-	search(site, "p", content)
+       	search(site, "h1", content, key)
+	search(site, "h2", content, key)
+	search(site, "h3", content, key)
+	search(site, "h4", content, key)
+	search(site, "p", content, key)
+	
 	content.each do |tag|
 	    tag.split(" ").each do |split_word|
 		next unless split_word.length > 4
@@ -52,14 +61,23 @@ class Site < ActiveRecord::Base
 	    end	   
 	end
     end
-    def search(site, tag, tags)
+    def search(site, tag, tags, key)
 	site.css(tag).each do |item|
-     	            content =  item.text
-		    content = content.gsub(/\t/,'')
-		    content = content.gsub(/\n/,'')
-		    content = content.gsub(/\r/,'') 
-		    tags.push content	
-	    end
+	   p key
+	   if key.nil?
+		tags.push reduce_content(item.text)	
+	    else
+	    	next unless item.text.include? key
+		tags.push reduce_content(item.text)
+	    end	    
+	end
 	return tags
+    end
+
+    def reduce_content(content)
+   	 content = content.gsub(/\t/,'')
+ 	 content = content.gsub(/\n/,'')
+	 content = content.gsub(/\r/,'') 
+	 return content
     end
 end

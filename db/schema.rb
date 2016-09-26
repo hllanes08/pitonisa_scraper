@@ -31,30 +31,12 @@ ActiveRecord::Schema.define(version: 20160921050514) do
     t.integer  "item_type"
   end
 
-  create_table "pages", force: :cascade do |t|
-    t.string   "url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string   "name"
-  end
-
-  add_index "pages", ["url"], name: "index_pages_on_url", unique: true, using: :btree
-
   create_table "sites", force: :cascade do |t|
     t.string   "url"
     t.string   "name"
     t.integer  "site_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "tags", force: :cascade do |t|
-    t.integer  "tag_type"
-    t.string   "content"
-    t.integer  "page_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string   "url"
   end
 
   create_table "trends", force: :cascade do |t|

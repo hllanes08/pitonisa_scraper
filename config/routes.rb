@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :sessions, :only =>[:create,:destroy]
       resources :sites, :only => [:create, :index]
       get 'sites/:id/popularize', to: 'sites#popularize'
+      get 'sites/:id/popularize_by_key', to: 'sites#popularize_by_key'
       end
   end
 end
