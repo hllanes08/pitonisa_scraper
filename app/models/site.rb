@@ -28,7 +28,7 @@ class Site < ActiveRecord::Base
     	trends =  Hash.new
  	search_general(site, trends, key)
 	sub_search(site, trends, key)
-	return trends
+	return trends.sort_by { |key, value| value}.reverse.to_h 
     end
     
     private
