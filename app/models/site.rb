@@ -24,7 +24,7 @@ class Site < ActiveRecord::Base
 	sub_search(site, trends, nil)	
 	return trends.sort_by { |key, value| value}.reverse.to_h
     end
-    def popularize_by_key(key)
+    def popularize_by_key(key,user)
         site =  Nokogiri::HTML(RestClient.get(self.url)) 
     	trends =  Hash.new
  	search_general(site, trends, key)
@@ -32,7 +32,7 @@ class Site < ActiveRecord::Base
 	search = Search.new
 	search.tag = key
 	search.search_date = Time.now
-	search.user_id = current_user.id
+	search.user_id = user.id
 	search.save!
 	final_trends = trends.sort_by { |key, value| value}.reverse.to_h 
    	final_trends[0..10].each do |trend|

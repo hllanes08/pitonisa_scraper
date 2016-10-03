@@ -21,7 +21,7 @@ class API::V1::SitesController < ApplicationController
 
     def popularize_by_key
    	site = Site.find(params[:id])
-	render json: site.popularize_by_key(params[:key].to_s.downcase)
+	render json: site.popularize_by_key(params[:key].to_s.downcase,current_user)
     end
     private
 
