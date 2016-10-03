@@ -29,7 +29,20 @@ class Site < ActiveRecord::Base
     	trends =  Hash.new
  	search_general(site, trends, key)
 	sub_search(site, trends, key)
-	return trends.sort_by { |key, value| value}.reverse.to_h 
+	search = Search.new
+	search.tag = key
+	search.search_date = Time.now
+	search.user_id = current_user.id
+	search.save!
+	final_trends = trends.sort_by { |key, value| value}.reverse.to_h 
+   	final_trends[0..10].each do |trend|
+	  s_p = SearchPopularize.new
+	  s_p.tag = trend.key
+	  s_p.index = trend.value
+	  s_p.seach_id = search.id
+	  s_p.save!
+	end
+	return final_trends	
     end
     
     private

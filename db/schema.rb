@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161003222247) do
+ActiveRecord::Schema.define(version: 20161003232637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,22 @@ ActiveRecord::Schema.define(version: 20161003222247) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "item_type"
+  end
+
+  create_table "search_popularizes", force: :cascade do |t|
+    t.string   "tag"
+    t.integer  "search_id"
+    t.integer  "index"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "searches", force: :cascade do |t|
+    t.string   "tag"
+    t.date     "search_date"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "user_id"
   end
 
   create_table "sites", force: :cascade do |t|

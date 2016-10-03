@@ -1,0 +1,2 @@
+class SearchPopularize < ApplicationRecord
+end
