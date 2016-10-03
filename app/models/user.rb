@@ -29,7 +29,7 @@ class  User < ActiveRecord::Base
   def generate_authentication_token!
     begin
       self.auth_token = Devise.friendly_token
-      self.expires_token_at = Time.now + (10*60)
+      self.expires_token_at = Time.now + (10*60*60)
     end while self.class.exists?(auth_token: auth_token)
   end
 end

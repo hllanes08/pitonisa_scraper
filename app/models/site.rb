@@ -15,6 +15,7 @@ require 'rubygems'
 require 'uri'
 
 class Site < ActiveRecord::Base
+    belongs_to :user, class_name: 'User'
     def popularize
 	site =  Nokogiri::HTML(RestClient.get(self.url))
 	self.update_attribute(:name,site.css('title').text)

@@ -6,6 +6,7 @@ class API::V1::SitesController < ApplicationController
     
     def create
 	site = Site.new(site_params)
+	site.user_id = current_user.id
 	if site.save
 	    render json: site, status: 201
 	else
