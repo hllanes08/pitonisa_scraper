@@ -50,8 +50,8 @@ class Site < ActiveRecord::Base
     private
 
     def search_and_delete(key)
-	searches = Search.where(tag:key).where('search_date betweeen ? and ?',Time.now.beginning_of_day, Time.now.end_of_day)
-	search.each do |search|
+	    searches = Search.where(tag:key, search_date: Time.now)#"search_date betweeen ? and ? ", key, Time.now.beginning_of_day, Time.now.end_of_day)
+	searches.each do |search|
 	    SearchPopularize.where(search_id:search.id).delete_all
 	    search.delete
 	end	
