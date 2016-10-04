@@ -67,12 +67,12 @@ class Site < ActiveRecord::Base
 	search(site, "p", content, key)
 	
 	content.each do |tag|
-	    tag.split(" ").each do |split_word|
-		next unless split_word.length > 4 && split_word != key
-		if trends.key?(split_word)
-		    trends[split_word] += 1
+	    tag.split(" ").each do |split_word| 
+		next unless split_word.length > 4 && !(split_word.downcase.include? key)
+		if trends.key?(split_word.downcase)
+		    trends[split_word.downcase] += 1
 		else
-		    trends[split_word] = 1
+		    trends[split_word.downcase] = 1
 		end
 	    end	   
 	end
