@@ -24,7 +24,7 @@ class Site < ActiveRecord::Base
 	sub_search(site, trends, nil)	
 	return trends.sort_by { |key, value| value}.reverse.to_h
     end
-    def popularize_by_key(key,user)
+    def popularize_by_key(key,user_id)
         site =  Nokogiri::HTML(RestClient.get(self.url)) 
     	trends =  Hash.new
  	search_general(site, trends, key)
@@ -32,17 +32,18 @@ class Site < ActiveRecord::Base
 	search = Search.new
 	search.tag = key
 	search.search_date = Time.now
-	search.user_id = user.id
+	search.user_id = user_id
 	search.save!
-	final_trends = trends.sort_by { |key, value| value}.reverse.to_h 
-   	final_trends[0..10].each do |trend|
+	trends.sort_by { |key, value| value}.reverse.to_h 
+	limitless = trends.count > 10 ? 10 : trends.count
+   	trends.first(limitless).each do |trend|
 	  s_p = SearchPopularize.new
-	  s_p.tag = trend.key
-	  s_p.index = trend.value
-	  s_p.seach_id = search.id
+	  s_p.tag = trend[0]
+	  s_p.index = trend[1]
+	  s_p.search_id = search.id
 	  s_p.save!
 	end
-	return final_trends	
+	return trends.first(limitless)	
     end
     
     private
@@ -67,7 +68,7 @@ class Site < ActiveRecord::Base
 	
 	content.each do |tag|
 	    tag.split(" ").each do |split_word|
-		next unless split_word.length > 4
+		next unless split_word.length > 4 && split_word != key
 		if trends.key?(split_word)
 		    trends[split_word] += 1
 		else

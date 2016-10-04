@@ -1,5 +1,5 @@
 class API::V1::SitesController < ApplicationController
-    before_action :authenticate_with_token!, only: [:index, :create]
+    before_action :authenticate_with_token!, only: [:index, :create, :popularize_by_key]
     def index
 	render json: Site.all
     end
@@ -21,7 +21,8 @@ class API::V1::SitesController < ApplicationController
 
     def popularize_by_key
    	site = Site.find(params[:id])
-	render json: site.popularize_by_key(params[:key].to_s.downcase,current_user)
+	user_id = current_user.id
+	render json: site.popularize_by_key(params[:key].to_s.downcase, user_id)
     end
     private
 
