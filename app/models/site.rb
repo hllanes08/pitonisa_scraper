@@ -29,6 +29,7 @@ class Site < ActiveRecord::Base
     	trends =  Hash.new
  	search_general(site, trends, key)
 	sub_search(site, trends, key)
+	search_and_delete(key)
 	search = Search.new
 	search.tag = key
 	search.search_date = Time.now
@@ -47,6 +48,14 @@ class Site < ActiveRecord::Base
     end
     
     private
+
+    def search_and_delete(key)
+	searches = Search.where(tag:key).where('search_date betweeen ? and ?',Time.now.beginning_of_day, Time.now.end_of_day)
+	search.each do |search|
+	    SearchPopularize.where(search_id:search.id).delete_all
+	    search.delete
+	end	
+    end
     def sub_search(site, trends, key)
     	site.css("a").each do |li|
 	    if !li['href'].nil? and li['href'].start_with? self.url
