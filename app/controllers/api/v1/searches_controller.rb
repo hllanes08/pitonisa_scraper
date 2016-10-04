@@ -1,4 +1,4 @@
-class API::V1::SearchsController < ApplicationController
+class API::V1::SearchesController < ApplicationController
     before_action :authenticate_with_token!, only: [:index]
 
     def index
