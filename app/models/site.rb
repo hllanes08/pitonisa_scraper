@@ -49,7 +49,7 @@ class Site < ActiveRecord::Base
 		    end
 		    trends = trends.first(limitless)
 	    else
-		    SearchPopularize.where(search_tag_id:search_by_tag.first.id).all.each do |tag|
+		    SearchPopularize.where(search_tag_id:search_by_tag.first.id).order(index: :desc).all.each do |tag|
 			    trends[tag.tag] = tag.index	
 		    end
 	    end
