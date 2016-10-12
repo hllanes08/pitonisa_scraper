@@ -11,5 +11,5 @@
 #
 
 class SearchPopularize < ApplicationRecord
-   belong_to :search_tag, class_name: 'SearchTag'
+   belongs_to :search_tag, class_name: 'SearchTag'
 end
