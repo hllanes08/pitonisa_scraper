@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161003232637) do
+ActiveRecord::Schema.define(version: 20161012180542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,10 +32,18 @@ ActiveRecord::Schema.define(version: 20161003232637) do
 
   create_table "search_popularizes", force: :cascade do |t|
     t.string   "tag"
-    t.integer  "search_id"
+    t.integer  "search_tag_id"
     t.integer  "index"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "search_tags", force: :cascade do |t|
+    t.string   "tag"
+    t.date     "search_tag_date"
+    t.integer  "created_by"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "searches", force: :cascade do |t|

@@ -5,9 +5,10 @@
 #  id         :integer          not null, primary key
 #  url        :string
 #  name       :string
-#  type       :integer
+#  site_type  :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  user_id    :integer
 #
 
 FactoryGirl.define do
