@@ -32,7 +32,7 @@ class Site < ActiveRecord::Base
 		site =  Nokogiri::HTML(RestClient.get(self.url))
 		trends =  Hash.new
 		ActiveRecord::Base.transaction do
-			search_by_tag  = SearchTag.where(tag:key, search_tag_date: Time.now)
+			search_by_tag  = SearchTag.where(" tag = ? and search_tag_date between ? and ? ", key, DateTime.now.beginning_of_day, DateTime.now.end_of_day)	
 			if search_by_tag.count == 0
 				search_general(site, trends, key)
 				sub_search(site, key, trends)
@@ -42,17 +42,16 @@ class Site < ActiveRecord::Base
 				search.search_tag_date = Time.now
 				search.user_id = user_id
 				search.save!
-				trends.sort_by { |key, value| value}.reverse.to_h
+				sorted = trends.sort_by { |key, value| value}.reverse.to_h
 				limitless = trends.count > 10 ? 10 : trends.count
-				trends.first(limitless).each do |trend|
+				sorted.first(limitless).each do |trend|
 					s_p = SearchPopularize.new
 					s_p.tag = trend[0]
 					s_p.index = trend[1]
 					s_p.search_tag_id = search.id
 					s_p.save!
 				end
-
-				trends = trends.first(limitless)
+				trends = sorted.first(limitless).to_h
 			else
 				SearchPopularize.where(search_tag_id:search_by_tag.first.id).order(index: :desc).all.each do |tag|
 					trends[tag.tag] = tag.index
@@ -67,14 +66,14 @@ class Site < ActiveRecord::Base
 			search.user_id = user_id
 			search.save
 		end
-
+		p trends
 		return trends
 	end
 
 	private
 
 	def search_and_delete(key)
-		searches = Search.where(tag:key, search_date: Time.now).delete_all#"search_date betweeen ? and ? ", key, Time.now.beginning_of_day, Time.now.end_of_day)
+		searches = Search.where("tag = ? and search_date betweeen ? and ? ", key, DateTime.now.beginning_of_day, DateTime.now.end_of_day)
 	end
 
 	def sub_search(site, key, trends)
@@ -85,11 +84,14 @@ class Site < ActiveRecord::Base
 				threads << Thread.new do
 					url = li['href'].gsub(/\s+/,'')
 					sub_result = Hash.new
-					subsite =  Nokogiri::HTML(RestClient.get(url))	
-					semaphore.synchronize do	
-					       	search_general(subsite, trends, key)
-				#		trends.merge(sub_result){|k, a_value, b_value| a_value + b_value }
+					begin
+						subsite =  Nokogiri::HTML(RestClient.get(url))
+						semaphore.synchronize do	
+					     	search_general(subsite, trends, key)
 						p trends
+					end
+					rescue Exception => e
+
 					end
 				end
 			end
