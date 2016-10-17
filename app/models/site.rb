@@ -81,22 +81,22 @@ class Site < ActiveRecord::Base
 		semaphore = Mutex.new
 		site.css("a").each do |li|
 			if !li['href'].nil? and li['href'].start_with? self.url
-				threads << Thread.new do
+				#threads << Thread.new do
 					url = li['href'].gsub(/\s+/,'')
 					sub_result = Hash.new
 					begin
 						subsite =  Nokogiri::HTML(RestClient.get(url))
-						semaphore.synchronize do	
-					     	search_general(subsite, trends, key)
-						p trends
-					end
+						#semaphore.synchronize do	
+					     		search_general(subsite, trends, key)
+							p trends
+						#end
 					rescue Exception => e
 
 					end
-				end
+				#end
 			end
 		end
-		threads.each(&:join)
+		#threads.each(&:join)
 		return trends
 	end
 
