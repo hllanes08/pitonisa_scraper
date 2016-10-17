@@ -5,7 +5,7 @@ class API::V1::SearchesController < ApplicationController
 
 	    searches = []
 	    Search.where(user_id:current_user.id).group_by(&:tag).each do |tag, records|
-		    searches.push [ tag: tag, value: records.count ]
+		    searches.push( tag: tag, value: records.count )
     	    end
         render json: searches
     end
